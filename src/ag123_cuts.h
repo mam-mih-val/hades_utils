@@ -6,10 +6,16 @@ namespace AgAg123AGeV {
 
 AnalysisTree::Cuts *EventCuts(const std::string &branch, const std::string &name = "HadesGoodEvent") {
   auto *event_cuts = new AnalysisTree::Cuts(name);
-  AnalysisTree::SimpleCut vtx_xy_cut{{{"vtx_x", "vtx_y"}}, [](std::vector<double> r) {
-									   return sqrt(r.at(0) * r.at(0) + r.at(1) * r.at(1)) < 3.0;
+  AnalysisTree::SimpleCut vtx_xy_cut{{{branch, "vtx_x"},
+									  {branch, "vtx_y"}}, [](std::vector<double> r) {
+									   auto r_x = r.at(0) - -6.26652e-01;
+									   auto r_y = r.at(1) - -1.67751e-01;
+									   auto d_x = 8.35689e-01;
+									   auto d_y = 7.49888e-01;
+									   auto d = (d_x+d_y)/2;
+									   return sqrt(r_x*r_x + r_y*r_y) < 3.0*d;
 									 }};
-  AnalysisTree::SimpleCut vtx_z_cut({branch, "vtx_z"}, -60.0, 0.0);
+  AnalysisTree::SimpleCut vtx_z_cut({branch, "vtx_z"}, -70.0, -5.0);
   AnalysisTree::SimpleCut vtx_chi2_cut({branch, "vtx_chi2"}, 0.5, 40);
   AnalysisTree::SimpleCut good_vertex_cut({branch, "good_vertex_cluster"}, 0.5, 1.5);
   AnalysisTree::SimpleCut good_vertex_candidate_cut({branch, "good_vertex_candidate"}, 0.5, 1.5);
@@ -19,7 +25,7 @@ AnalysisTree::Cuts *EventCuts(const std::string &branch, const std::string &name
   AnalysisTree::SimpleCut good_start_veto_cut({branch, "good_start_veto"}, 0.5, 1.5);
   AnalysisTree::SimpleCut good_start_meta_cut({branch, "good_start_meta"}, 0.5, 1.5);
   event_cuts->AddCuts({
-//	  vtx_xy_cut,
+	  vtx_xy_cut,
 	  vtx_z_cut,
 	  vtx_chi2_cut,
 	  good_vertex_cut,
