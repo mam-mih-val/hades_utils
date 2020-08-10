@@ -62,22 +62,42 @@ AnalysisTree::Cuts *MetaHitsCuts(const std::string &branch, const std::string &n
 };
 AnalysisTree::Cuts *WallHitsCuts(const std::string &branch, const std::string &name = "HadesGoodWallHit") {
   auto *wall_cuts = new AnalysisTree::Cuts(name);
-  AnalysisTree::SimpleCut beta_cut({branch, "beta"}, 0, 1.0);
-  AnalysisTree::SimpleCut ring_by_ring_cuts({{branch, "ring"}, {branch, "beta"}, {branch, "signal"}},
+  AnalysisTree::SimpleCut ring_by_ring_cuts({{branch, "ring"}, {branch, "beta"}, {branch, "signal"},
+											 {branch, "time"}},
 											[](std::vector<double> vars) {
-											  if (2.0 <= vars.at(0) && vars.at(0) <= 5)
-												return vars.at(1) > 0.55
-													&& vars.at(2) > 80.0;
-											  if (vars.at(0) >= 6.0 && vars.at(0) <= 7.0)
-												return vars.at(1) > 0.55
-													&& vars.at(2) > 85.0;
-											  if (8.0 <= vars.at(0) && vars.at(0) <= 10.0)
-												return vars.at(1) > 0.55
-													&& vars.at(2) > 88.0;
-											  return false;
+											  double ring = vars.at(0);
+											  [[maybe_unused]] double beta = vars.at(1);
+											  double signal = vars.at(2);
+											  double time = vars.at(3);
+											  double c = 2.998e-1; // speed of light in m/s*E+9
+											  double time_low = 6.8 / c;
+											  if( time < time_low )
+												return false;
+											  if (1.0 <= ring && ring <= 5) {
+												if(signal < 80.0)
+												  return false;
+												auto time_up = 6.8/0.84/c;
+												if( time > time_up )
+												  return false;
+											  }
+											  if ( 6.0 <= ring && ring <= 7.0) {
+												if(signal < 85.0)
+												  return false;
+												auto time_up = 6.8/0.85/c;
+												if( time > time_up )
+												  return false;
+											  }
+											  if (8.0 <= ring && ring <= 10.0) {
+												if (signal < 88.0)
+												  return false;
+												auto time_up = 6.8/0.80/c;
+												if( time > time_up )
+												  return false;
+											  }
+											  return true;
 											});
 
-  wall_cuts->AddCuts({beta_cut, ring_by_ring_cuts});
+  wall_cuts->AddCuts({ring_by_ring_cuts});
   return wall_cuts;
 };
 
