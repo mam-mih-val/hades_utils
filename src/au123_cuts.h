@@ -5,7 +5,6 @@
 namespace AuAu123AGeV {
 
 AnalysisTree::Cuts *EventCuts(const std::string &branch, const std::string &name = "HadesGoodEvent") {
-  auto *event_cuts = new AnalysisTree::Cuts(name);
   AnalysisTree::SimpleCut vtx_xy_cut{{{"vtx_x", "vtx_y"}}, [](std::vector<double> r) {
 									   return sqrt(r.at(0) * r.at(0) + r.at(1) * r.at(1)) < 3.0;
 									 }};
@@ -18,7 +17,7 @@ AnalysisTree::Cuts *EventCuts(const std::string &branch, const std::string &name
   AnalysisTree::SimpleCut no_veto_cut({branch, "no_veto"}, 0.5, 1.5);
   AnalysisTree::SimpleCut good_start_veto_cut({branch, "good_start_veto"}, 0.5, 1.5);
   AnalysisTree::SimpleCut good_start_meta_cut({branch, "good_start_meta"}, 0.5, 1.5);
-  event_cuts->AddCuts({
+  auto *event_cuts = new AnalysisTree::Cuts(name, {
 	  vtx_xy_cut,
 	  vtx_z_cut,
 	  vtx_chi2_cut,
@@ -34,12 +33,10 @@ AnalysisTree::Cuts *EventCuts(const std::string &branch, const std::string &name
 }
 
 AnalysisTree::Cuts *TrackCuts(const std::string &branch, const std::string &name = "HadesGoodVertexTrack") {
-  auto *vertex_tracks_cuts = new AnalysisTree::Cuts(name);
   AnalysisTree::SimpleCut dca_xy_cut({branch, "dca_xy"}, -10, 10);
   AnalysisTree::SimpleCut dca_z_cut({branch, "dca_z"}, -10, 10);
   AnalysisTree::SimpleCut chi2_rk_cut({branch, "chi2"}, 0, 100);
-
-  vertex_tracks_cuts->AddCuts({
+  auto *vertex_tracks_cuts = new AnalysisTree::Cuts(name, {
 	  dca_xy_cut,
 	  dca_z_cut,
 	  chi2_rk_cut
@@ -48,14 +45,11 @@ AnalysisTree::Cuts *TrackCuts(const std::string &branch, const std::string &name
 };
 
 AnalysisTree::Cuts *MetaHitsCuts(const std::string &branch, const std::string &name = "HadesGoodMetaHit") {
-  auto *tof_cuts = new AnalysisTree::Cuts(name);
   AnalysisTree::SimpleCut meta_match_chi2_cut({branch, "match_quality"}, 0, 3.0);
-
-  tof_cuts->AddCuts({meta_match_chi2_cut});
+  auto *tof_cuts = new AnalysisTree::Cuts(name, {meta_match_chi2_cut});
   return tof_cuts;
 };
 AnalysisTree::Cuts *WallHitsCuts(const std::string &branch, const std::string &name = "HadesGoodWallHit") {
-  auto *wall_cuts = new AnalysisTree::Cuts(name);
   AnalysisTree::SimpleCut beta_cut({branch, "beta"}, 0, 1.0);
   AnalysisTree::SimpleCut ring_by_ring_cuts({{branch, "ring"}, {branch, "beta"}, {branch, "signal"}},
 											[](std::vector<double> vars) {
@@ -70,8 +64,7 @@ AnalysisTree::Cuts *WallHitsCuts(const std::string &branch, const std::string &n
 													&& vars.at(2) > 88.0;
 											  return false;
 											});
-
-  wall_cuts->AddCuts({beta_cut, ring_by_ring_cuts});
+  auto *wall_cuts = new AnalysisTree::Cuts(name, {beta_cut, ring_by_ring_cuts});
   return wall_cuts;
 };
 
