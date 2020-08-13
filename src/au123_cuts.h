@@ -5,7 +5,8 @@
 namespace AuAu123AGeV {
 
 AnalysisTree::Cuts *EventCuts(const std::string &branch, const std::string &name = "HadesGoodEvent") {
-  AnalysisTree::SimpleCut vtx_xy_cut{{{"vtx_x", "vtx_y"}}, [](std::vector<double> r) {
+  AnalysisTree::SimpleCut vtx_xy_cut{{{branch, "vtx_x"},
+									  {branch, "vtx_y"}}, [](std::vector<double> r) {
 									   return sqrt(r.at(0) * r.at(0) + r.at(1) * r.at(1)) < 3.0;
 									 }};
   AnalysisTree::SimpleCut vtx_z_cut({branch, "vtx_z"}, -60.0, 0.0);
