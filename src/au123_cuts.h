@@ -1,3 +1,6 @@
+#ifndef HADES_UTILS_SRC_AU123_CUTS_H_
+#define HADES_UTILS_SRC_AU123_CUTS_H_
+
 #include <cmath>
 #include "AnalysisTree/Cuts.hpp"
 #include "AnalysisTree/SimpleCut.hpp"
@@ -70,3 +73,5 @@ AnalysisTree::Cuts *WallHitsCuts(const std::string &branch, const std::string &n
 };
 
 }// namespace AuAu_1_23_AGeV
+
+#endif // HADES_UTILS_SRC_AU123_CUTS_H_
