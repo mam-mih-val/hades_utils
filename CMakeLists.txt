@@ -30,11 +30,13 @@ set(HEADERS
         src/au123_cuts.h
         src/ag123_cuts.h
         src/cuts.h
+        src/corrections.h
         )
 
 set(SOURCES
         src/centrality.cc
         src/cuts.cc
+        src/corrections.cc
         )
 
 set(${PROJECT_NAME}_INCLUDE_DIR "include")
