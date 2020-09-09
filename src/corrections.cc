@@ -15,12 +15,15 @@ Corrections* Corrections::Instance(){
 }
 double Corrections::GetEfficiency(int cent_class, double pt, double y) {
   try {
-	int bin = Instance()->efficiency_maps_.at(cent_class).FindBin(pt, y);
-	return Instance()->efficiency_maps_.at(cent_class).GetBinContent(bin);
+	size_t bin_x =  Instance()->efficiency_maps_.at(cent_class).GetXaxis()->FindBin(pt);
+	size_t bin_y =  Instance()->efficiency_maps_.at(cent_class).GetYaxis()->FindBin(y);
+	float efficiency = Instance()->efficiency_maps_.at(cent_class).GetBinContent(bin_x, bin_y);
+	if( efficiency < 0.05 )
+	  return 0.0;
+	return efficiency;
   } catch (const std::exception &exception) {
-	std::cout << "Error in Corrections::GetEfficiency()" << std::endl;
-	std::cout << exception.what() << std::endl;
-	abort();
+	std::cout << "Corrections::GetEfficiency(): " << std::endl;
+	throw exception;
   }
 }
 double Corrections::GetMismatch(int cent_class, double pt, double y) {
@@ -37,8 +40,7 @@ double Corrections::GetMismatch(int cent_class, double pt, double y) {
 void Corrections::ReadMaps(const std::string &file_name) {
   auto *file = TFile::Open(file_name.c_str());
   if (!file) {
-	std::cout << "No param file for acceptance correction" << std::endl;
-	abort();
+	throw std::runtime_error("Corrections::ReadMaps(): No such file "+file_name);
   }
   TH2F *histo{nullptr};
   int percentile = 2;
@@ -46,15 +48,13 @@ void Corrections::ReadMaps(const std::string &file_name) {
 	std::string name = "efficiency_" + std::to_string(percentile);
 	file->GetObject(name.c_str(), histo);
 	if (!histo) {
-	  std::cout << "No such obj: " << name << std::endl;
-	  abort();
+	  throw std::runtime_error("Corrections::ReadMaps(): No such obj "+name);
 	}
 	Instance()->efficiency_maps_.emplace_back(*histo);
 	name = "contamination_" + std::to_string(percentile);
 	file->GetObject(name.c_str(), histo);
 	if (!histo) {
-	  std::cout << "No such obj: " << name << std::endl;
-	  abort();
+	  throw std::runtime_error("Corrections::ReadMaps(): No such obj "+name);
 	}
 	Instance()->contamination_maps_.emplace_back(*histo);
 	percentile += 5;
