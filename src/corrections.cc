@@ -18,8 +18,6 @@ double Corrections::GetEfficiency(int cent_class, double pt, double y) {
 	size_t bin_x =  Instance()->efficiency_maps_.at(cent_class).GetXaxis()->FindBin(pt);
 	size_t bin_y =  Instance()->efficiency_maps_.at(cent_class).GetYaxis()->FindBin(y);
 	float efficiency = Instance()->efficiency_maps_.at(cent_class).GetBinContent(bin_x, bin_y);
-	if( efficiency < 0.05 )
-	  return 0.0;
 	return efficiency;
   } catch (const std::exception &exception) {
 	std::cout << "Corrections::GetEfficiency(): " << std::endl;
