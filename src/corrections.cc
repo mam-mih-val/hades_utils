@@ -15,8 +15,8 @@ Corrections* Corrections::Instance(){
 }
 double Corrections::GetEfficiency(int cent_class, double pt, double y) {
   try {
-	size_t bin_x =  Instance()->efficiency_maps_.at(cent_class).GetXaxis()->FindBin(pt);
-	size_t bin_y =  Instance()->efficiency_maps_.at(cent_class).GetYaxis()->FindBin(y);
+	size_t bin_x =  Instance()->efficiency_maps_.at(cent_class).GetXaxis()->FindBin(y);
+	size_t bin_y =  Instance()->efficiency_maps_.at(cent_class).GetYaxis()->FindBin(pt);
 	float efficiency = Instance()->efficiency_maps_.at(cent_class).GetBinContent(bin_x, bin_y);
 	return efficiency;
   } catch (const std::exception &exception) {
