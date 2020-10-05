@@ -21,6 +21,7 @@ AnalysisTree::Cuts *EventCuts(const std::string &branch, const std::string &name
   AnalysisTree::SimpleCut no_veto_cut({branch, "no_veto"}, 0.5, 1.5);
   AnalysisTree::SimpleCut good_start_veto_cut({branch, "good_start_veto"}, 0.5, 1.5);
   AnalysisTree::SimpleCut good_start_meta_cut({branch, "good_start_meta"}, 0.5, 1.5);
+  AnalysisTree::SimpleCut minimum_bias({branch, "physical_trigger_2"}, 0.5, 1.5);
   auto *event_cuts = new AnalysisTree::Cuts(name, {
 	  vtx_xy_cut,
 	  vtx_z_cut,
@@ -31,7 +32,8 @@ AnalysisTree::Cuts *EventCuts(const std::string &branch, const std::string &name
 	  no_pile_up_start_cut,
 	  no_veto_cut,
 	  good_start_veto_cut,
-	  good_start_meta_cut
+	  good_start_meta_cut,
+	  minimum_bias
   });
   return event_cuts;
 }
