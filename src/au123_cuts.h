@@ -8,10 +8,12 @@
 namespace AuAu123AGeV {
 
 AnalysisTree::Cuts *EventCuts(const std::string &branch, const std::string &name = "HadesGoodEvent") {
-  AnalysisTree::SimpleCut vtx_xy_cut{{{branch, "vtx_x"},
-									  {branch, "vtx_y"}}, [](std::vector<double> r) {
-									   return sqrt(r.at(0) * r.at(0) + r.at(1) * r.at(1)) < 3.0;
-									 }};
+//  AnalysisTree::SimpleCut vtx_xy_cut{{{branch, "vtx_x"},
+//									  {branch, "vtx_y"}}, [](std::vector<double> r) {
+//									   return sqrt(r.at(0) * r.at(0) + r.at(1) * r.at(1)) < 3.0;
+//									 }};
+  AnalysisTree::SimpleCut vtx_x_cut({branch, "vtx_x"}, -3.0, 3.0);
+  AnalysisTree::SimpleCut vtx_y_cut({branch, "vtx_y"}, -3.0, 3.0);
   AnalysisTree::SimpleCut vtx_z_cut({branch, "vtx_z"}, -60.0, 0.0);
   AnalysisTree::SimpleCut vtx_chi2_cut({branch, "vtx_chi2"}, 0.5, 40);
   AnalysisTree::SimpleCut good_vertex_cut({branch, "good_vertex_cluster"}, 0.5, 1.5);
@@ -23,7 +25,8 @@ AnalysisTree::Cuts *EventCuts(const std::string &branch, const std::string &name
   AnalysisTree::SimpleCut good_start_meta_cut({branch, "good_start_meta"}, 0.5, 1.5);
   AnalysisTree::SimpleCut minimum_bias({branch, "physical_trigger_2"}, 0.5, 1.5);
   auto *event_cuts = new AnalysisTree::Cuts(name, {
-	  vtx_xy_cut,
+	  vtx_x_cut,
+	  vtx_y_cut,
 	  vtx_z_cut,
 	  vtx_chi2_cut,
 	  good_vertex_cut,
