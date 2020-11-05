@@ -36,7 +36,7 @@ AnalysisTree::Cuts *EventCuts(const std::string &branch, const std::string &name
 	  no_veto_cut,
 	  good_start_veto_cut,
 	  good_start_meta_cut,
-	  minimum_bias
+//	  minimum_bias
   });
   return event_cuts;
 }
